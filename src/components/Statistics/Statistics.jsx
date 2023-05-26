@@ -1,27 +1,35 @@
-import { Component } from "react";
+import PropTypes from 'prop-types';
 
-class Statistics extends Component {
-    countTotalFeedback(...args){
-        return args.reduce((acc, el) => (acc + el),0)
-    }
-    countPositiveFeedbackPercentage(el, ...args){
-        return `${Math.round(100*(el / (args.reduce((acc,el) => (acc + el),0) || 1)))} %`;
-    }
-    render() { 
-        const {good, neutral, bad} = this.props.state;
-        const total = this.countTotalFeedback(good, neutral, bad);
-        const positevePart = this.countPositiveFeedbackPercentage(good, total);
-        return (
-            <div>
-                <h2>Statistics</h2>
-                <p>Good: {good}</p>
-                <p>Neutral: {neutral}</p>
-                <p>Bad: {bad}</p>
-                <p>Total: {total}</p>
-                <p>Positive feedback: {positevePart}</p>
-            </div>
-        );
-    }
-}
- 
+const countTotalFeedback = (...args) => {
+  return args.reduce((acc, el) => acc + el, 0);
+};
+const countPositiveFeedbackPercentage = (el, ...args) => {
+  return `${Math.round(
+    100 * (el / (args.reduce((acc, el) => acc + el, 0) || 1))
+  )} %`;
+};
+
+const Statistics = ({ state }) => {
+  const { good, neutral, bad } = state;
+  const total = countTotalFeedback(good, neutral, bad);
+  const positevePart = countPositiveFeedbackPercentage(good, total);
+  return (
+    <div>
+      <p>Good: {good}</p>
+      <p>Neutral: {neutral}</p>
+      <p>Bad: {bad}</p>
+      <p>Total: {total}</p>
+      <p>Positive feedback: {positevePart}</p>
+    </div>
+  );
+};
+
+Statistics.propTypes = {
+  state: PropTypes.shape({
+    good: PropTypes.number.isRequired,
+    neutral: PropTypes.number.isRequired,
+    bad: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
 export default Statistics;
