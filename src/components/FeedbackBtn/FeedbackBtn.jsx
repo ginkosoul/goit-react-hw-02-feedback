@@ -1,24 +1,21 @@
 import PropTypes from 'prop-types';
 import css from '../FeedbackBtn/Feedback.module.css';
 
-const FeedbackBtn = ({ handleClick }) => {
+const FeedbackBtn = ({ handleClick, options }) => {
   return (
     <div className={css.container}>
-      <button className={css.btn} id="good" onClick={handleClick}>
-        Good
-      </button>
-      <button className={css.btn} id="neutral" onClick={handleClick}>
-        Neutral
-      </button>
-      <button className={css.btn} id="bad" onClick={handleClick}>
-        Bad
-      </button>
+      {options.map(e => (
+        <button key={e} className={css.btn} id={e} onClick={handleClick}>
+          {e}
+        </button>
+      ))}
     </div>
   );
 };
 
 FeedbackBtn.propTypes = {
   handleClick: PropTypes.func,
+  options: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FeedbackBtn;

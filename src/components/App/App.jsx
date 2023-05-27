@@ -12,33 +12,36 @@ export class App extends Component {
     bad: 0,
   };
   handleButtonClick = event => {
-    const btnId = event.target.id;
-    const step = 1;
-    switch (btnId) {
-      case 'good':
-        this.setState(pv => ({ ...pv, good: pv.good + step }));
-        break;
-      case 'neutral':
-        this.setState(pv => ({ ...pv, neutral: pv.neutral + step }));
-        break;
-      case 'bad':
-        this.setState(pv => ({ ...pv, bad: pv.bad + step }));
-        break;
-      default:
-        break;
-    }
+    const { id } = event.target;
+    this.setState(pv => ({ ...pv, [id]: pv[id] + 1 }));
+  };
+  countTotalFeedback = (...args) => {
+    return args.reduce((acc, el) => acc + el, 0);
+  };
+  countPositiveFeedbackPercentage = (el, total) => {
+    return el ? `${Math.round(100 * (el / total))} %` : '0 %';
   };
   render() {
+    const { good, neutral, bad } = this.state;
+    const total = this.countTotalFeedback(good, neutral, bad);
+    const positive = this.countPositiveFeedbackPercentage(good, total);
+    const keys = Object.keys(this.state);
     return (
       <div className={css.container}>
         <Section title="Please leave feedback">
-          <FeedbackBtn handleClick={this.handleButtonClick} />
+          <FeedbackBtn options={keys} handleClick={this.handleButtonClick} />
         </Section>
-        {Object.values(this.state).reduce((acc, e) => acc + e) === 0 ? (
+        {total === 0 ? (
           <Notification message="No feedback given" />
         ) : (
           <Section title="Statistics">
-            <Statistics state={this.state} />
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={total}
+              positevePart={positive}
+            />
           </Section>
         )}
       </div>
